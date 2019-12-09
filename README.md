@@ -6,9 +6,8 @@ Cookie manager for react native.
 [![npm downloads](https://img.shields.io/npm/dm/react-native-cookies.svg)](https://www.npmjs.com/package/react-native-cookies)
 [![GitHub license](https://img.shields.io/badge/license-MIT-blue.svg)](https://raw.githubusercontent.com/joeferraro/react-native-cookies/master/LICENSE.md)
 
-### Looking for Maintainers
 
-I no longer use this library and I'm looking for maintainer(s) to take full control over the development and release cycle.
+
 
 ### Installation
 
@@ -132,64 +131,6 @@ CookieManager.clearByName('cookie_name')
     console.log('CookieManager.clearByName =>', res);
   });
 
-```
-
-#### WebKit-Support (iOS only)
-React Native comes with a WebView component, which uses UIWebView on iOS. Introduced in iOS 8 Apple implemented the WebKit-Support with all the performance boost. 
-
-To use this it's required to use a special implementation of the WebView component (e.g. [react-native-wkwebview](https://github.com/CRAlpha/react-native-wkwebview)).
-
-This special implementation of the WebView component stores the cookies __not__ in `NSHTTPCookieStorage` anymore. The new cookie-storage is `WKHTTPCookieStore` and implementes a differnt interface.
-
-To use this _CookieManager_ with WebKit-Support we extended the interface with the attribute `useWebKit` (a boolean value, default: `FASLE`) for the following methods:
-
-|Method|WebKit-Support|Method-Signature|
-|---|---|---|
-|getAll| Yes | `CookieManager.getAll(useWebKit:boolean)` |
-|clearAll| Yes | `CookieManager.clearAll(useWebKit:boolean)` |
-|get| Yes | `CookieManager.get(url:string, useWebKit:boolean)` |
-|set| Yes | `CookieManager.set(cookie:object, useWebKit:boolean)` |
-
-##### Usage
-```javascript
-import CookieManager from 'react-native-cookies';
-
-const useWebKit = true;
-
-// list cookies (IOS ONLY)
-CookieManager.getAll(useWebKit)
-	.then((res) => {
-		console.log('CookieManager.getAll from webkit-view =>', res);
-	});
-
-// clear cookies
-CookieManager.clearAll(useWebKit)
-	.then((res) => {
-		console.log('CookieManager.clearAll from webkit-view =>', res);
-	});
-
-// Get cookies as a request header string
-CookieManager.get('http://example.com', useWebKit)
-	.then((res) => {
-		console.log('CookieManager.get from webkit-view =>', res);
-		// => 'user_session=abcdefg; path=/;'
-	});
-
-// set a cookie (IOS ONLY)
-const newCookie: = {
-	name: 'myCookie',
-	value: 'myValue',
-	domain: 'some domain',
-	origin: 'some origin',
-	path: '/',
-	version: '1',
-	expiration: '2015-05-30T12:30:00.00-05:00'
-};
-
-CookieManager.set(newCookie, useWebKit)
-	.then((res) => {
-		console.log('CookieManager.set from webkit-view =>', res);
-	});
 ```
 
 ### TODO

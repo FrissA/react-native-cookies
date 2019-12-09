@@ -18,6 +18,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+
 public class CookieManagerModule extends ReactContextBaseJavaModule {
 
     private ForwardingCookieHandler cookieHandler;
@@ -32,7 +33,7 @@ public class CookieManagerModule extends ReactContextBaseJavaModule {
     }
 
     @ReactMethod
-    public void set(ReadableMap cookie, boolean useWebKit, final Promise promise) throws Exception {
+    public void set(ReadableMap cookie, final Promise promise) throws Exception {
         throw new Exception("Cannot call on android, try setFromResponse");
     }
 
@@ -40,14 +41,10 @@ public class CookieManagerModule extends ReactContextBaseJavaModule {
     public void setFromResponse(String url, String value, final Promise promise) throws URISyntaxException, IOException {
         Map headers = new HashMap<String, List<String>>();
         // Pretend this is a header
-        headers.put("Set-Cookie", Collections.singletonList(value));
+        headers.put("Set-cookie", Collections.singletonList(value));
         URI uri = new URI(url);
-        try {
-            this.cookieHandler.put(uri, headers);
-            promise.resolve(true);
-        } catch (IOException e) {
-            promise.resolve(false);
-        }
+        this.cookieHandler.put(uri, headers);
+        promise.resolve(null);
     }
 
     @ReactMethod
@@ -56,12 +53,12 @@ public class CookieManagerModule extends ReactContextBaseJavaModule {
     }
 
     @ReactMethod
-    public void getAll(boolean useWebKit, Promise promise) throws Exception {
+    public void getAll(Promise promise) throws Exception {
         throw new Exception("Cannot get all cookies on android, try getCookieHeader(url)");
     }
 
     @ReactMethod
-    public void get(String url, boolean useWebKit, Promise promise) throws URISyntaxException, IOException {
+    public void get(String url, Promise promise) throws URISyntaxException, IOException {
         URI uri = new URI(url);
 
         Map<String, List<String>> cookieMap = this.cookieHandler.get(uri, new HashMap());
@@ -72,7 +69,7 @@ public class CookieManagerModule extends ReactContextBaseJavaModule {
             String[] cookies = cookieList.get(0).split(";");
             for (int i = 0; i < cookies.length; i++) {
                 String[] cookie = cookies[i].split("=", 2);
-                if (cookie.length > 1) {
+                if(cookie.length > 1) {
                   map.putString(cookie[0].trim(), cookie[1]);
                 }
             }
@@ -81,7 +78,7 @@ public class CookieManagerModule extends ReactContextBaseJavaModule {
     }
 
     @ReactMethod
-    public void clearAll(boolean useWebKit, final Promise promise) {
+    public void clearAll(final Promise promise) {
         this.cookieHandler.clearCookies(new Callback() {
             public void invoke(Object... args) {
                 promise.resolve(null);
